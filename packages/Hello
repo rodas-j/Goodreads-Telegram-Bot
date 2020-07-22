@@ -5,7 +5,7 @@ from telegram.ext import Updater
 import logging  #for debugging purposes
 from telegram.ext import CommandHandler 
 from telegram.ext import MessageHandler, Filters
-from browsing import *
+from .browsing import googleGoodreads
 import telegram
 bot = telegram.Bot(token='621697472:AAFIgz7WpxP34D_kSBeSiblYm6ZxjrpC67Q')
 
