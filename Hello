@@ -1,0 +1,29 @@
+from telegram.ext import Updater
+import logging  #for debugging purposes
+from telegram.ext import CommandHandler 
+from telegram.ext import MessageHandler, Filters
+
+updater = Updater(token='621697472:AAFIgz7WpxP34D_kSBeSiblYm6ZxjrpC67Q', use_context=True)
+dispatcher = updater.dispatcher #for quick access of dispatcher
+
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                     level=logging.INFO) #Exception Handling: https://github.com/python-telegram-bot/python-telegram-bot/wiki/Exception-Handling
+
+def start(update, context):
+    context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a bot, please talk to me!")
+
+def hi(update, context):
+    context.bot.send_message(chat_id=update.effective_chat.id, text="Hey, man!")
+
+def echo(update, context):
+    context.bot.send_message(chat_id=update.effective_chat.id, text=update.effective_chat.id)
+
+echo_handler = MessageHandler(Filters.text & (~Filters.command), echo)
+dispatcher.add_handler(echo_handler)
+
+start_handler = CommandHandler('start', start)
+hi_handler = CommandHandler('hi', hi)
+dispatcher.add_handler(start_handler)
+dispatcher.add_handler(hi_handler)
+
+updater.start_polling()
