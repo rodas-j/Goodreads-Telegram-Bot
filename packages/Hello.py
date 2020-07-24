@@ -9,6 +9,7 @@ import telegram
 import requests
 from bs4 import BeautifulSoup
 import re
+from Goodreads_Search import *
 import urllib.parse
 from urllib.parse import urlparse
 
@@ -73,11 +74,8 @@ def echo(update, context):
     received_message = update.message.text
     chat_id = update.effective_chat.id
     print(f'{chat_id}: {received_message}')
-    reply = googleGoodreads(received_message)
-    result = ''
-    for i in reply:
-        result += f'{i} | \n {reply[i]} \n'
-    context.bot.send_message(chat_id=update.effective_chat.id, text=result)
+    reply = formatted_results(get_results(download_page(search_in_goodreads(received_message))), 10)
+    context.bot.send_message(chat_id=update.effective_chat.id, text=reply)
 
 def caps(update, context):
     text_caps = ' '.join(context.args).upper()
@@ -112,3 +110,10 @@ def eyasu(text):
 
 def barok(text):
     bot.send_message(270466342, text)
+
+def rodas(text):
+    bot.send_message(chat_id=689688510, 
+                 text="*bold* _italic_ `fixed width font` [link](http://google.com)\.", 
+                 parse_mode=telegram.ParseMode.MARKDOWN_V2)
+
+rodas("Hello Rodas")

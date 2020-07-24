@@ -12,6 +12,7 @@ def googleSearch(query):
             html = requests.get(url)
             if html.status_code==200:
                 soup = BeautifulSoup(html.text, 'lxml')
+                ssoup = BeautifulSoup(html.text)
                 a = soup.find_all('a') # a is a list
                 for i in a:
                     k = i.get('href')
@@ -23,7 +24,8 @@ def googleSearch(query):
                         if(re.search('google.com', domain.netloc)):
                             continue
                         else:
-                            #TODO This is where the title comes in.
+                            contents = i.contents()
+                            print('Hi')
                             g_clean.append(rul)
                     except:
                         continue
