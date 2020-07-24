@@ -4,6 +4,7 @@ https://github.com/python-telegram-bot/python-telegram-bot/wiki/Code-snippets#po
 from telegram.ext import Updater
 import logging  #for debugging purposes
 from telegram.ext import CommandHandler 
+from telegram.ext import RegexHandler 
 from telegram.ext import MessageHandler, Filters
 import telegram
 import requests
@@ -64,8 +65,9 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                      level=logging.INFO) #Exception Handling: https://github.com/python-telegram-bot/python-telegram-bot/wiki/Exception-Handling
 
 def start(update, context):
-    print(context)
-    context.bot.send_message(chat_id=update.effective_chat.id, text="Hey")
+    username = update.message.from_user.first_name
+    text = f"Hey, {username}! \nWelcome to my fun little project. Start by typing the title of the book you're looking for"
+    context.bot.send_message(chat_id=update.effective_chat.id, text=text, parse_mode=telegram.ParseMode.HTML)
 
 def hi(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Hey, man!")
@@ -75,11 +77,15 @@ def echo(update, context):
     chat_id = update.effective_chat.id
     print(f'{chat_id}: {received_message}')
     reply = formatted_results(get_results(download_page(search_in_goodreads(received_message))), 10)
-    context.bot.send_message(chat_id=update.effective_chat.id, text=reply)
+    context.bot.send_message(chat_id=update.effective_chat.id, text=reply, parse_mode=telegram.ParseMode.HTML)
 
 def caps(update, context):
     text_caps = ' '.join(context.args).upper()
     context.bot.send_message(chat_id=update.effective_chat.id, text=text_caps)
+
+def book(update, context):
+    link = update.message.text.replace('/bk_', 'https://www.goodreads.com/book/show/')
+    print(link)
 
 caps_handler = CommandHandler('caps', caps)
 dispatcher.add_handler(caps_handler)
@@ -91,7 +97,11 @@ start_handler = CommandHandler('start', start)
 hi_handler = CommandHandler('hi', hi)
 dispatcher.add_handler(start_handler)
 dispatcher.add_handler(hi_handler)
-
+try:
+    dispatcher.add_handler(MessageHandler(Filters.regex('^(/bk_[\d]+)$'), book))
+except:
+    print("error")
+    updater.stop()
 updater.start_polling()
 
 '''
@@ -102,18 +112,3 @@ The Filters class contains a number of functions that filter incoming messages f
  '''
 
  
-def kalab(text):
-    bot.send_message(747823734, text)
-
-def eyasu(text):
-    bot.send_message(381695983, text)
-
-def barok(text):
-    bot.send_message(270466342, text)
-
-def rodas(text):
-    bot.send_message(chat_id=689688510, 
-                 text="*bold* _italic_ `fixed width font` [link](http://google.com)\.", 
-                 parse_mode=telegram.ParseMode.MARKDOWN_V2)
-
-rodas("Hello Rodas")

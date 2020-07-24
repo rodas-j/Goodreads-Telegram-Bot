@@ -46,11 +46,14 @@ def get_results(html):
 
 def formatted_results(search_results, count):
   
-  formatted = '\U0001F4DA Results | Books\n\n'
+  formatted = '\U0001F4DA <b>Results | Books</b>\n\n'
   i = 0
+  exp = '(\d+)'
+  regexp = re.compile(exp)
   while i < count:
     search_result = search_results[i]
-    string = f"\U0001F4D6 {search_result.title} \nby {search_result.author} {search_result.goodreads_author}\n{search_result.rating} — published {search_result.published} — {search_result.editions}\n\n"
+    link = '/bk_' + regexp.search(search_result.link).group()
+    string = f"\U0001F4D6 <b>{search_result.title}</b> \n <i>by {search_result.author}</i> {search_result.goodreads_author}\n{search_result.rating} — published {search_result.published} — {search_result.editions}\n{link}\n\n"
     formatted += string
     i+=1     
   return formatted
